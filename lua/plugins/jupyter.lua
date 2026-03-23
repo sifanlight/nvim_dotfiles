@@ -1,38 +1,36 @@
 return {
-  -- 1. The Kernel Runner (Molten)
+  -- 1. The Image Renderer (Essential for Molten)
+  {
+    "3rd/image.nvim",
+    opts = {
+      backend = "kitty", -- Since you are using Kitty
+      max_width = 100,
+      max_height = 12,
+      integrations = {
+        markdown = { enabled = true },
+      },
+    },
+  },
+
+  -- 2. Molten (The Kernel Runner)
   {
     "benlubas/molten-nvim",
-    version = "^1.0.0", -- use version 1.0 for stability
+    version = "^1.0.0",
     build = ":UpdateRemotePlugins",
+    dependencies = { "3rd/image.nvim" },
     init = function()
-      -- these are important for a VS Code feel
       vim.g.molten_image_provider = "image.nvim"
       vim.g.molten_output_win_max_height = 20
+      -- This bit helps prevent the error you saw
+      vim.g.molten_virt_text_output = true
     end,
   },
 
-  -- 2. The Text Converter (Jupytext)
-  -- Allows you to open .ipynb files directly as python scripts
+  -- 3. Jupytext (To open .ipynb files)
   {
     "GCBallesteros/jupytext.vim",
     config = function()
       vim.g.jupytext_fmt = "py:percent"
     end,
-  },
-
-  -- 3. Quarto (Optional but recommended)
-  -- This provides the "Cell" UI and better shortcuts
-  {
-    "quarto-dev/quarto-nvim",
-    dependencies = {
-      "jmbuhr/otter.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    opts = {
-      lspFeatures = {
-        languages = { "python" },
-        chunks = "all",
-      },
-    },
   },
 }
